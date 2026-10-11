@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Mapeamento Hands HOF</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: coluna única de leitura (até 720px), barra de progresso fixa no topo, uma seção por parte do mapeamento */
+:root{
+  --bg:#f6f2f4; --surface:#ffffff; --ink:#2a1f24; --muted:#6c5c63; --line:#e3d8dd;
+  --accent:#9c2f52; --accent-ink:#ffffff; --soft:#f4e4ea; --ok:#2f7a5b;
+  --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --body:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#191316; --surface:#231b1f; --ink:#f1e8ec; --muted:#b5a4ab; --line:#3b2e34;
+    --accent:#e88dab; --accent-ink:#2b0f1a; --soft:#35212b; --ok:#7fcfa9; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#191316; --surface:#231b1f; --ink:#f1e8ec; --muted:#b5a4ab; --line:#3b2e34;
+  --accent:#e88dab; --accent-ink:#2b0f1a; --soft:#35212b; --ok:#7fcfa9; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55}
+.wrap{max-width:720px;margin:0 auto;padding-inline:16px;padding-block:0 72px}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:10px}
+.bar-in{max-width:720px;margin:0 auto;padding-inline:16px;display:flex;align-items:center;gap:12px}
+.bar-label{font-size:13px;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+.track{flex:1;min-width:0;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.fill{height:100%;width:0;background:var(--accent);transition:width .25s ease}
+@media (prefers-reduced-motion: reduce){.fill{transition:none}}
+header.intro{padding-block:36px 8px;display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(30px,6vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.intro p{margin:0;max-width:62ch}
+.how{display:flex;flex-direction:column;gap:6px;margin:6px 0 0;padding:0;list-style:none;color:var(--muted);font-size:15px}
+.how li{padding-left:18px;position:relative}
+.how li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+section.part{margin-top:44px;display:flex;flex-direction:column;gap:22px}
+.part-head{display:flex;flex-direction:column;gap:4px;border-top:2px solid var(--ink);padding-top:14px}
+.part-n{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h2{font-family:var(--display);font-weight:700;font-size:24px;line-height:1.2;margin:0;text-wrap:balance}
+.part-desc{margin:0;color:var(--muted);font-size:15px;max-width:62ch}
+.q{display:flex;flex-direction:column;gap:6px}
+.q label.main, .q .legend{font-weight:600;font-size:16px}
+.hint{font-size:14px;color:var(--muted);margin:0}
+textarea,input[type=text]{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px 12px}
+textarea{min-height:92px;resize:vertical}
+textarea:focus,input[type=text]:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opt{position:relative}
+.opt input{position:absolute;opacity:0;inset:0;margin:0;cursor:pointer}
+.opt span{display:block;padding:8px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:15px}
+.opt input:checked + span{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.opt input:focus-visible + span{outline:2px solid var(--accent);outline-offset:2px}
+.send{margin-top:52px;padding:22px;background:var(--soft);border-radius:10px;display:flex;flex-direction:column;gap:14px}
+.send h2{font-size:22px}
+.send p{margin:0;max-width:60ch}
+.btn{align-self:flex-start;font:inherit;font-weight:600;border:0;border-radius:8px;padding:12px 20px;background:var(--accent);color:var(--accent-ink);cursor:pointer}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.status{font-size:15px;color:var(--ok);font-weight:600;min-height:1.4em}
+#out{min-height:220px;font-size:14px}
+.foot{margin-top:28px;font-size:13px;color:var(--muted)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.btn.ghost{background:transparent;color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+</style>
+<style>html{color-scheme:light dark}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="bar"><div class="bar-in">
+  <span class="bar-label" id="count">0 de 0 respondidas</span>
+  <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+</div></div>
+
+<div class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Hands HOF · Mentoria de lábios</span>
+    <h1>Mapeamento da mentoria e da técnica</h1>
+    <p>Dra. Erica, este formulário nos ajuda a entender a sua técnica de preenchimento labial e como você imagina a mentoria. É a partir dele que vamos montar a oferta e o lançamento da Hands HOF.</p>
+    <ul class="how">
+      <li>São 56 perguntas em 9 partes, cerca de 45 minutos. Responda do seu jeito, como se estivesse explicando para uma colega.</li>
+      <li>Pode deixar em branco o que ainda não estiver definido.</li>
+      <li>As respostas ficam guardadas neste navegador enquanto você preenche, então dá para parar e voltar depois no mesmo aparelho.</li>
+      <li>No final, toque em “Enviar pelo WhatsApp” para mandar as respostas para a Noma.</li>
+    </ul>
+  </header>
+
+  <form id="form" novalidate></form>
+
+  <div class="send">
+    <h2>Enviar para a Noma</h2>
+    <p>Toque no botão para abrir o WhatsApp com as suas respostas. Elas também são copiadas, caso você precise colar na conversa.</p>
+    <div class="actions"><button type="button" class="btn" id="send">Enviar pelo WhatsApp</button><button type="button" class="btn ghost" id="copy">Só copiar as respostas</button></div>
+    <div class="status" id="status" role="status"></div>
+    <div id="fallback" hidden>
+      <p class="hint">Se o WhatsApp abrir sem o texto, selecione as respostas abaixo, copie e cole na conversa.</p>
+      <textarea id="out" readonly aria-label="Respostas para copiar"></textarea>
+    </div>
+  </div>
+  <p class="foot">Formulário preparado pela Noma para a Dra. Erica Sousa.</p>
+</div>
+
+<script>
+(function(){
+  var PARTS = [
+    {t:"Você e a sua trajetória", d:"Para contarmos a sua história com verdade na comunicação.", q:[
+      {id:"formacao", l:"Qual a sua formação e quais especializações você tem na área?", h:"Graduação, pós, cursos e habilitações. Inclua ano, se lembrar."},
+      {id:"tempo", l:"Há quanto tempo você faz preenchimento labial e, mais ou menos, quantos pacientes já atendeu?", s:1},
+      {id:"porque", l:"Por que você decidiu ensinar agora?", h:"O que te motivou a criar a mentoria."},
+      {id:"ensinou", l:"Você já ensinou essa técnica para alguém?", h:"Cursos, aulas, colegas, alunos. Conte como foi e o resultado que tiveram."},
+      {id:"instagram", l:"Qual o seu Instagram e quem mais te segue hoje: pacientes ou profissionais?", h:"Se souber, diga o número de seguidores e uma proporção aproximada.", s:1}
+    ]},
+    {t:"A sua técnica de lábios", d:"A parte mais importante. É daqui que sai o diferencial da mentoria.", q:[
+      {id:"tec_nome", l:"A técnica tem nome? Se não tem, como você costuma chamá-la?", s:1},
+      {id:"tec_origem", l:"Como ela nasceu?", h:"O que você via que não funcionava e o que te fez mudar a forma de fazer."},
+      {id:"tec_passos", l:"Explique a técnica em etapas, do planejamento à finalização.", h:"Não precisa de linguagem científica. Pode ser em tópicos."},
+      {id:"tec_diferente", l:"O que você faz de diferente das técnicas que a maioria aprende?", h:"Pontos de aplicação, plano, quantidade de produto, instrumento, ordem, avaliação do lábio."},
+      {id:"tec_resultado", l:"Que resultado ela entrega no lábio da paciente e quanto tempo costuma durar?", h:"Naturalidade, contorno, volume, projeção, hidratação."},
+      {id:"tec_erros", l:"Quais os erros mais comuns que você vê em lábios feitos por outros profissionais?", h:"E como a sua técnica evita ou corrige cada um."},
+      {id:"tec_seguranca", l:"Como a técnica lida com segurança e intercorrências?", h:"O que você ensina para prevenir e para agir se acontecer."},
+      {id:"tec_naoindica", l:"Para quais casos você não indica a técnica?"},
+      {id:"tec_base", l:"Em que ela se apoia?", h:"Anatomia, estudos, autores, cursos que te influenciaram, sua própria casuística."}
+    ]},
+    {t:"A mentoria de dois dias", d:"Hoje temos: presencial, dois dias, grupo de 10 pessoas, com mentalidade, técnica e vendas. Corrija o que estiver diferente.", q:[
+      {id:"men_confere", l:"Essas informações estão corretas? O que mudaria?"},
+      {id:"men_local", l:"Em que cidade e em que local a mentoria vai acontecer?", s:1},
+      {id:"men_dia1", l:"Como você imagina o primeiro dia?", h:"Horários aproximados e o que acontece em cada bloco."},
+      {id:"men_dia2", l:"E o segundo dia?"},
+      {id:"men_pratica", l:"Os alunos vão praticar em pacientes modelo?", o:["Sim","Não","Ainda não defini"]},
+      {id:"men_pratica_det", l:"Se sim: quantos pacientes por aluno, quem traz os modelos e quem fornece o material?"},
+      {id:"men_mentalidade", l:"O que você quer trabalhar no pilar de mentalidade?"},
+      {id:"men_vendas", l:"O que você quer ensinar no pilar de vendas?", h:"Precificação, consulta de avaliação, fechamento, posicionamento, Instagram."},
+      {id:"men_experiencia", l:"Você falou em oferecer uma experiência única para cada aluno. O que isso significa para você, na prática?", h:"Ambiente, recepção, materiais, acompanhamento individual, o que o aluno sente e leva."},
+      {id:"men_leva", l:"O que o aluno leva ao final?", h:"Certificado, apostila, protocolos, gravações, kit."},
+      {id:"men_depois", l:"Haverá acompanhamento depois dos dois dias?", h:"Grupo, encontros online, tirar dúvidas de casos, por quanto tempo."}
+    ]},
+    {t:"Para quem é", d:"Quanto mais específico, melhor conseguimos falar com a pessoa certa.", q:[
+      {id:"pub_ideal", l:"Descreva o aluno ideal da mentoria.", h:"Momento de carreira, tipo de consultório, o que ele já faz."},
+      {id:"pub_profissoes", l:"Quais profissões você pretende aceitar?", h:"Por exemplo: dentistas, médicos, biomédicos, farmacêuticos, enfermeiros. Diga também se vai exigir registro no conselho e habilitação na área."},
+      {id:"pub_nivel", l:"Para qual nível de experiência?", o:["Quem está começando","Quem já aplica e quer evoluir","Avançado","Todos os níveis"]},
+      {id:"pub_dor", l:"Qual a maior dificuldade desse profissional com lábios hoje?"},
+      {id:"pub_tentou", l:"O que ele já tentou para resolver e por que não funcionou?"},
+      {id:"pub_duvidas", l:"Que dúvidas e objeções você costuma ouvir de colegas quando fala em curso ou mentoria?", h:"Preço, tempo, medo de intercorrência, já fiz outros cursos."},
+      {id:"pub_nao", l:"Quem você não quer na mentoria?"}
+    ]},
+    {t:"Resultados e provas", d:"O que conseguimos mostrar para sustentar a promessa.", q:[
+      {id:"prova_casos", l:"Você tem fotos de antes e depois de lábios feitos com a técnica?", h:"Diga mais ou menos quantos casos e se há autorização de uso de imagem assinada."},
+      {id:"prova_depo", l:"Tem depoimentos de pacientes ou de profissionais que aprenderam com você?", h:"Em vídeo, áudio, print ou texto."},
+      {id:"prova_numeros", l:"Que números você pode comprovar?", h:"Anos de atuação, pacientes atendidos, alunos, turmas, palestras."},
+      {id:"prova_extra", l:"Já saiu em algum veículo, deu palestra ou recebeu algum reconhecimento?"}
+    ]},
+    {t:"Mercado e referências", d:"Para sabermos onde você se posiciona.", q:[
+      {id:"mer_conc", l:"Quais cursos ou mentorias de lábios você conhece?", h:"Nomes ou perfis do Instagram. O que fazem bem e o que você faria diferente."},
+      {id:"mer_ref", l:"Que profissionais ou marcas você admira, dentro ou fora da sua área?"},
+      {id:"mer_nao", l:"O que você não quer parecer de jeito nenhum?"}
+    ]},
+    {t:"Oferta e planos", d:"Hoje temos: R$ 5.000 por pessoa, 10 vagas por turma. Corrija o que estiver diferente.", q:[
+      {id:"of_preco", l:"O valor de R$ 5.000 está confirmado? Como você pensa em parcelar?", s:1},
+      {id:"of_individual", l:"Você pretende ter uma versão individual da mentoria?", o:["Sim","Não","Ainda não sei"]},
+      {id:"of_individual_det", l:"Se sim, por qual valor e em que formato?", s:1},
+      {id:"of_fullface", l:"E o full face?", o:["Entra junto nesta mentoria","Será uma mentoria seguinte","Ainda não sei"]},
+      {id:"of_bonus", l:"O que você poderia oferecer como bônus?", h:"Aula extra, material, consultoria de caso, acesso a um grupo, desconto em próxima mentoria."},
+      {id:"of_data", l:"Quando você gostaria de realizar a primeira turma?", s:1},
+      {id:"of_meta", l:"O que seria um bom resultado para você neste primeiro lançamento?", h:"Vagas preenchidas, faturamento, número de turmas no ano."},
+      {id:"of_investir", l:"Há um valor disponível para investir em anúncios?", s:1}
+    ]},
+    {t:"Disponibilidade e limites", d:"Para planejarmos o lançamento dentro da sua realidade.", q:[
+      {id:"lim_tempo", l:"Quantas horas por semana você consegue dedicar ao lançamento?", h:"Gravações, lives, conversas com interessados e aprovações.", s:1},
+      {id:"lim_camera", l:"Como você se sente gravando vídeos, fazendo lives e conversando com interessados sobre a venda?"},
+      {id:"lim_nao", l:"Existe algo que você não aceita fazer ou dizer na divulgação?"},
+      {id:"lim_conselho", l:"Quais orientações do seu conselho você segue na divulgação?", h:"Antes e depois, promessa de resultado, divulgação de preço. Diga também se já conversou com o CRO ou com um advogado sobre a mentoria."},
+      {id:"lim_aprova", l:"Quem aprova os textos e vídeos antes de publicar, e em quanto tempo?", s:1}
+    ]},
+    {t:"Materiais e acessos", d:"O que já existe e podemos aproveitar.", q:[
+      {id:"mat_marca", l:"A Hands HOF já tem logo, cores ou identidade visual?", s:1},
+      {id:"mat_conteudo", l:"Que materiais da técnica já existem?", h:"Slides, apostila, aulas gravadas, vídeos de procedimento, fotos."},
+      {id:"mat_links", l:"Cole aqui links úteis.", h:"Instagram, site, pasta do Drive, página de algum curso anterior."},
+      {id:"mat_extra", l:"Ficou faltando alguma coisa que você acha importante nos contar?"}
+    ]}
+  ];
+
+  var KEY = "hands-hof-mapeamento-v1";
+  var form = document.getElementById("form");
+  var saved = {};
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { saved = {}; }
+
+  function el(tag, attrs, text){
+    var n = document.createElement(tag);
+    if (attrs) for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  var all = [];
+  PARTS.forEach(function(p, pi){
+    var sec = el("section", {"class":"part"});
+    var head = el("div", {"class":"part-head"});
+    head.appendChild(el("span", {"class":"part-n"}, "Parte " + (pi+1) + " de " + PARTS.length));
+    head.appendChild(el("h2", null, p.t));
+    head.appendChild(el("p", {"class":"part-desc"}, p.d));
+    sec.appendChild(head);
+    p.q.forEach(function(q){
+      all.push(q); q.part = p.t;
+      var box = el("div", {"class":"q"});
+      if (q.o){
+        box.setAttribute("role","group");
+        box.setAttribute("aria-labelledby","lg_"+q.id);
+        box.appendChild(el("span", {"class":"legend", id:"lg_"+q.id}, q.l));
+        if (q.h) box.appendChild(el("p", {"class":"hint"}, q.h));
+        var opts = el("div", {"class":"opts"});
+        q.o.forEach(function(o, oi){
+          var lab = el("label", {"class":"opt"});
+          var inp = el("input", {type:"radio", name:q.id, id:q.id+"_"+oi, value:o});
+          if (saved[q.id] === o) inp.checked = true;
+          lab.appendChild(inp); lab.appendChild(el("span", null, o));
+          opts.appendChild(lab);
+        });
+        box.appendChild(opts);
+      } else {
+        box.appendChild(el("label", {"class":"main", "for":q.id}, q.l));
+        if (q.h) box.appendChild(el("p", {"class":"hint"}, q.h));
+        var f = q.s ? el("input", {type:"text", id:q.id, name:q.id}) : el("textarea", {id:q.id, name:q.id, rows:"3"});
+        if (saved[q.id]) f.value = saved[q.id];
+        box.appendChild(f);
+      }
+      sec.appendChild(box);
+    });
+    form.appendChild(sec);
+  });
+
+  function read(){
+    var data = {};
+    all.forEach(function(q){
+      if (q.o){
+        var c = form.querySelector('input[name="'+q.id+'"]:checked');
+        if (c) data[q.id] = c.value;
+      } else {
+        var v = document.getElementById(q.id).value.trim();
+        if (v) data[q.id] = v;
+      }
+    });
+    return data;
+  }
+
+  function refresh(){
+    var data = read();
+    var n = Object.keys(data).length;
+    document.getElementById("count").textContent = n + " de " + all.length + " respondidas";
+    document.getElementById("fill").style.width = (all.length ? Math.round(n / all.length * 100) : 0) + "%";
+    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+    return data;
+  }
+
+  function buildText(data){
+    var lines = ["MAPEAMENTO HANDS HOF · MENTORIA DE LÁBIOS", "Dra. Erica Sousa", ""];
+    PARTS.forEach(function(p, pi){
+      lines.push("== " + (pi+1) + ". " + p.t.toUpperCase() + " ==");
+      p.q.forEach(function(q){
+        lines.push("");
+        lines.push("P: " + q.l);
+        lines.push("R: " + (data[q.id] || "(em branco)"));
+      });
+      lines.push("");
+    });
+    return lines.join("\n");
+  }
+
+  form.addEventListener("input", refresh);
+  form.addEventListener("change", refresh);
+  form.addEventListener("submit", function(e){ e.preventDefault(); });
+
+  // Número da Noma no formato internacional, só dígitos (ex.: 5511999999999). Vazio = a pessoa escolhe o contato.
+  var WHATS = "";
+  var LIMIT = 6000; // tamanho máximo do texto dentro do link
+
+  function prepare(){
+    var text = buildText(refresh());
+    var out = document.getElementById("out");
+    out.value = text;
+    document.getElementById("fallback").hidden = false;
+    return text;
+  }
+  function copyText(text, okMsg){
+    var status = document.getElementById("status");
+    var out = document.getElementById("out");
+    function manual(){ status.textContent = "Selecione o texto abaixo e copie."; out.focus(); out.select(); }
+    try {
+      navigator.clipboard.writeText(text).then(function(){ status.textContent = okMsg; }, manual);
+    } catch (e) { manual(); }
+  }
+
+  document.getElementById("copy").addEventListener("click", function(){
+    copyText(prepare(), "Respostas copiadas. Agora cole no WhatsApp da Noma.");
+  });
+
+  document.getElementById("send").addEventListener("click", function(){
+    var text = prepare();
+    var enc = encodeURIComponent(text);
+    var fits = enc.length <= LIMIT;
+    var msg = fits ? enc : encodeURIComponent("Olá! Terminei o mapeamento da Hands HOF. Seguem as respostas:");
+    var url = "https://wa.me/" + WHATS + "?text=" + msg;
+    var w = null;
+    try { w = window.open(url, "_blank"); } catch (e) {}
+    copyText(text, fits
+      ? "Abrimos o WhatsApp com as suas respostas. Confira e toque em enviar."
+      : "Suas respostas são longas: abrimos o WhatsApp e copiamos o texto. Cole na conversa e envie.");
+    if (!w) { window.location.href = url; }
+  });
+
+  refresh();
+})();
+</script>
+</body>
+</html>
